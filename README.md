@@ -35,6 +35,9 @@ The primary data is available on the Paris Open Data platform and includes traff
 
 [Permanent Traffic Counts Dataset](https://opendata.paris.fr/explore/dataset/comptages-routiers-permanents/export/?disjunctive.libelle&disjunctive.etat_trafic&disjunctive.libelle_nd_amont&disjunctive.libelle_nd_aval&sort=t_1h)
 
+
+https://opendata.paris.fr/explore/dataset/comptages-routiers-permanents-historique/information/
+
 ### Instructions to Download Data
 1. **Access the Dataset**:
    - Use the link above to navigate to the dataset on the Paris Open Data platform.
