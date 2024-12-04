@@ -3,9 +3,10 @@
 import pandas as pd
 import glob
 
+
 def load_data(street):
     # Define the street
-    street = "washington"
+    # street = "washington"
 
     # Path to the directory containing the CSV files
     directory = f"data/{street}/*.csv"
@@ -40,7 +41,7 @@ def load_data(street):
 
     # Filter based on Arc id
     df = df[df["Identifiant arc"] == arc_id]
-        
+
     # Ensure proper column conversion
     df.rename(columns=column_mapping, inplace=True)
 
@@ -51,7 +52,8 @@ def load_data(street):
     df.drop(columns=["geo_point_2d", "geo_shape"], inplace=True)
 
     # Convert "Date et heure de comptage" to datetime
-    df["Date et heure de comptage"] = pd.to_datetime(df["Date et heure de comptage"], errors="coerce", utc=True)
+    df["Date et heure de comptage"] = pd.to_datetime(
+        df["Date et heure de comptage"], errors="coerce", utc=True).dt.tz_convert("Europe/Paris")
 
     # Initialize a list to hold DataFrames for concatenation
     dfs = [df]
@@ -61,16 +63,17 @@ def load_data(street):
 
     for file in files:
         temp_df = pd.read_csv(file)
-        
+
         # Rename columns to match the main DataFrame
         temp_df.rename(columns=column_mapping, inplace=True)
-        
+
         # Filter based on Arc id
         temp_df = temp_df[temp_df["Identifiant arc"] == arc_id]
-        
+
         # Convert "Date et heure de comptage" to datetime
-        temp_df["Date et heure de comptage"] = pd.to_datetime(temp_df["Date et heure de comptage"], errors="coerce", utc=True)
-        
+        temp_df["Date et heure de comptage"] = pd.to_datetime(
+            temp_df["Date et heure de comptage"], errors="coerce", utc=True).dt.tz_convert("Europe/Paris")
+
         # Append to the list
         dfs.append(temp_df)
 
@@ -79,22 +82,23 @@ def load_data(street):
 
     # Sort by "Date et heure de comptage" and drop duplicates
     final_df.sort_values(by="Date et heure de comptage", inplace=True)
-    final_df.drop_duplicates(subset="Date et heure de comptage", keep="first", inplace=True)
+    final_df.drop_duplicates(
+        subset="Date et heure de comptage", keep="first", inplace=True)
 
     # Reset index
     final_df.reset_index(drop=True, inplace=True)
 
     # Print summary
     print(f"Number of rows: {final_df.shape[0]}")
-    print(f"First date: {final_df['Date et heure de comptage'].min()}, Last date: {final_df['Date et heure de comptage'].max()}")
+    print(
+        f"First date: {final_df['Date et heure de comptage'].min()}, Last date: {final_df['Date et heure de comptage'].max()}")
 
     print("Columns:", final_df.columns)
-    
 
     # Save to a filtered CSV
     # output_filepath = filepath.replace(".csv", "-filtered.csv")
     # final_df.to_csv(output_filepath, sep=";", index=False)
 
     # print(f"Filtered data saved to: {output_filepath}")
-    
+
     return final_df
