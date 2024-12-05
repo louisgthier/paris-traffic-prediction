@@ -2,6 +2,7 @@
 
 import pandas as pd
 import glob
+from pytz import timezone
 
 
 def load_data(street):
@@ -52,11 +53,16 @@ def load_data(street):
     df.drop(columns=["geo_point_2d", "geo_shape"], inplace=True)
 
     # Convert "Date et heure de comptage" to datetime
+    # Convert the first DataFrame to UTC
     df["Date et heure de comptage"] = pd.to_datetime(
-        df["Date et heure de comptage"], errors="coerce", utc=True).dt.tz_convert("Europe/Paris")
+        df["Date et heure de comptage"], errors="coerce", utc=True
+    )
 
     # Initialize a list to hold DataFrames for concatenation
     dfs = [df]
+    
+    # Define Paris timezone
+    paris_tz = timezone("Europe/Paris")
 
     # Process all additional CSV files in the directory
     files = glob.glob(directory)
@@ -72,7 +78,7 @@ def load_data(street):
 
         # Convert "Date et heure de comptage" to datetime
         temp_df["Date et heure de comptage"] = pd.to_datetime(
-            temp_df["Date et heure de comptage"], errors="coerce", utc=True).dt.tz_convert("Europe/Paris")
+            temp_df["Date et heure de comptage"], errors="coerce").dt.tz_localize("Europe/Paris", ambiguous="NaT", nonexistent="shift_forward").dt.tz_convert("UTC")
 
         # Append to the list
         dfs.append(temp_df)
