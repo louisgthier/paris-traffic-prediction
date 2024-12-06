@@ -108,3 +108,8 @@ def load_data(street):
     # print(f"Filtered data saved to: {output_filepath}")
 
     return final_df
+
+if __name__ == "__main__":
+    load_data("washington")
+    load_data("st_antoine")
+    load_data("convention")
